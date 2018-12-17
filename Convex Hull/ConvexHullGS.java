@@ -174,12 +174,10 @@ public class ConvexHullGS extends JPanel {
                 } else if (thetaA > thetaB) {
                     return 1;
                 } else {
-                    double distanceA = Math.sqrt(((lowest.x - a.x) * (lowest.x - a.x)) +
-                            ((lowest.y - a.y) * (lowest.y - a.y)));
-                    double distanceB = Math.sqrt(((lowest.x - b.x) * (lowest.x - b.x)) +
-                            ((lowest.y - b.y) * (lowest.y - b.y)));
+                    double distanceA = Math.sqrt(((lowest.x - a.x) * (lowest.x - a.x)) + ((lowest.y - a.y) * (lowest.y - a.y)));
+                    double distanceB = Math.sqrt(((lowest.x - b.x) * (lowest.x - b.x)) + ((lowest.y - b.y) * (lowest.y - b.y)));
 
-                    if( distanceA < distanceB) {
+                    if (distanceA < distanceB) {
                         return -1;
                     } else {
                         return 1;
