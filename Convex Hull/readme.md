@@ -1,2 +1,2 @@
-This is my code for Convex Hull. The ConvexHull solution implements Jarvis's March, while the ConvexHullBetter solution
+This is my code for Convex Hull. The ConvexHullJM solution implements Jarvis's March, while the ConvexHullGS solution
 implements Graham Scan.
