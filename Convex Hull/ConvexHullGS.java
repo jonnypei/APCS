@@ -14,8 +14,8 @@ public class ConvexHullGS extends JPanel {
     final static int pointR = 3;                                  // Radius of Coordinate Point`
     static double multiplier;                                     // Coordinate Scaling Factor
 
-    static ArrayList <Point> points = new ArrayList <> ();        // Input Points
-    static ArrayList <Point> hull = new ArrayList <> ();          // Points on the Convex Hull
+    static ArrayList <Point> points = new ArrayList <> ();      // Input Points
+    static ArrayList <Point> hull = new ArrayList <> ();            // Points on the Convex Hull
 
 
     public static void main(String[] args) throws IOException {
@@ -82,9 +82,9 @@ public class ConvexHullGS extends JPanel {
         }
 
         // Draw Convex Hull
-        for (int i = 0; i < hull.size(); i++) {
+        for (int i = 0; i < hull.size() - 1; i++) {
             Point2D p1 = hull.get(i);
-            Point2D p2 = hull.get((i + 1) % hull.size());
+            Point2D p2 = hull.get(i + 1);
 
             g2d.drawLine(orientX(p1.getX()), orientY(p1.getY()), orientX(p2.getX()), orientY(p2.getY()));
         }
@@ -104,27 +104,6 @@ public class ConvexHullGS extends JPanel {
     }
 
     protected static enum Turn { CLOCKWISE, COUNTER_CLOCKWISE, COLLINEAR }
-
-    protected static boolean areAllCollinear(ArrayList <Point> points) {
-
-        if (points.size() < 2) {
-            return true;
-        }
-
-        final Point a = points.get(0);
-        final Point b = points.get(1);
-
-        for (int i = 2; i < points.size(); i++) {
-
-            Point c = points.get(i);
-
-            if (getTurn(a, b, c) != Turn.COLLINEAR) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public static ArrayList <Point> getConvexHull(List <Point> points) throws IllegalArgumentException {
 
@@ -156,7 +135,6 @@ public class ConvexHullGS extends JPanel {
             }
         }
 
-        // close the hull
         stack.push(sorted.get(0));
 
         return new ArrayList<Point>(stack);
@@ -165,11 +143,11 @@ public class ConvexHullGS extends JPanel {
     protected static Point getLowestPoint(List<Point> points) {
         Point lowest = points.get(0);
 
-        for(int i = 1; i < points.size(); i++) {
+        for (int i = 1; i < points.size(); i++) {
 
             Point temp = points.get(i);
 
-            if(temp.y < lowest.y || (temp.y == lowest.y && temp.x < lowest.x)) {
+            if (temp.y < lowest.y || (temp.y == lowest.y && temp.x < lowest.x)) {
                 lowest = temp;
             }
         }
@@ -177,14 +155,14 @@ public class ConvexHullGS extends JPanel {
         return lowest;
     }
 
-    protected static Set<Point> getSortedPointSet(List<Point> points) {
+    protected static Set <Point> getSortedPointSet(List <Point> points) {
 
         final Point lowest = getLowestPoint(points);
 
-        TreeSet<Point> set = new TreeSet <Point> (new Comparator<Point> () {
+        TreeSet<Point> set = new TreeSet <Point> (new Comparator <Point> () {
             public int compare(Point a, Point b) {
 
-                if(a == b || a.equals(b)) {
+                if (a == b || a.equals(b)) {
                     return 0;
                 }
 
@@ -196,9 +174,6 @@ public class ConvexHullGS extends JPanel {
                 } else if (thetaA > thetaB) {
                     return 1;
                 } else {
-                    // collinear with the 'lowest' point, let the point closest to it come first
-
-                    // use longs to guard against int-over/underflow
                     double distanceA = Math.sqrt(((lowest.x - a.x) * (lowest.x - a.x)) +
                             ((lowest.y - a.y) * (lowest.y - a.y)));
                     double distanceB = Math.sqrt(((lowest.x - b.x) * (lowest.x - b.x)) +
@@ -219,16 +194,13 @@ public class ConvexHullGS extends JPanel {
     }
 
     protected static Turn getTurn(Point a, Point b, Point c) {
-        long crossProduct = ((b.x - a.x) * (c.y - a.y)) -
-                ((b.y - a.y) * (c.x - a.x));
+        int crossProduct = ((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x));
 
-        if(crossProduct > 0) {
+        if (crossProduct > 0) {
             return Turn.COUNTER_CLOCKWISE;
-        }
-        else if(crossProduct < 0) {
+        } else if (crossProduct < 0) {
             return Turn.CLOCKWISE;
-        }
-        else {
+        } else {
             return Turn.COLLINEAR;
         }
     }
