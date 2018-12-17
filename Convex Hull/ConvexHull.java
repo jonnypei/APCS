@@ -4,7 +4,7 @@ import java.io.*;
 
 import java.awt.*;
 
-public class ConvexHullJarvisMarch extends JPanel {
+public class ConvexHull extends JPanel {
 
     final static int length = 800;                                // Side length of Display Window
     final static int shift = length / 2;                          // Orientation shift of coordinates
