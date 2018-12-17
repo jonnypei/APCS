@@ -1,1 +1,2 @@
-This is my solution for the Modular Flag Assignment. The main class is in "Flag", and I effectively use modular programming in my solution.
+This is my solution for the Modular Flag Assignment using Modular Programming. The main method is in Flag class; the Stripe, 
+Star, and Field classes are used to describe each feature in the flag.
