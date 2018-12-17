@@ -4,7 +4,7 @@ import java.io.*;
 
 import java.awt.*;
 
-public class ConvexHull extends JPanel {
+public class ConvexHullJM extends JPanel {
 
     final static int length = 800;                                // Side length of Display Window
     final static int shift = length / 2;                          // Orientation shift of coordinates
@@ -48,7 +48,7 @@ public class ConvexHull extends JPanel {
         System.out.println("\nSwitch to the Display Window to see your Convex Hull!");
 
         // Graphically display the Convex Hull
-        ConvexHull hull = new ConvexHull();
+        ConvexHullJM hull = new ConvexHullJM();
 
         JFrame frame = new JFrame("Convex Hull");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
