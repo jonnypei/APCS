@@ -74,7 +74,6 @@ public class ConvexHullJM extends JPanel {
         // Plot all points (Including those not on the Convex Hull)
         for (Point p : points) {
             g2d.fillOval(orientX(p.x) - pointR, orientY(p.y) - pointR, 2 * pointR, 2 * pointR);
-            g2d.drawString("(" + p.x + ", " + p.y + ")", orientX(p.x) + 3, orientY(p.y) - 5);
         }
 
         // Draw Convex Hull
