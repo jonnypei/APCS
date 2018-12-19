@@ -6,10 +6,13 @@ import java.awt.*;
 
 public class ConvexHullJM extends JPanel {
 
-    final static int length = 800;                                // Side length of Display Window
-    final static int shift = length / 2;                          // Orientation shift of coordinates
+    static int width;                                             // Width of Display Window
+    static int height;                                            // Height of Display Window
+    static int shiftX;                                            // Orientation shift of X coordinate
+    static int shiftY;                                            // Orientation shift of Y coordinate
+    static double maxCoordinate;                                  // Highest x or y coordinate value
     final static int pointR = 3;                                  // Radius of Coordinate Point`
-    static int multiplier;                                        // Coordinate Scaling Factor
+    static double multiplier;                                     // Coordinate Scaling Factor
 
     static ArrayList <Point> points = new ArrayList <> ();        // Input Points
     static ArrayList <Point> finalPoints = new ArrayList <> ();   // Points on the Convex Hull
@@ -33,12 +36,11 @@ public class ConvexHullJM extends JPanel {
         finalPoints = convexHull(points, points.size());
 
         // Determine scaling of coordinates
-        int maxCoordinate = 0;
+        maxCoordinate = 0;
         for (Point p : finalPoints) {
             maxCoordinate = Math.max(p.x, maxCoordinate);
             maxCoordinate = Math.max(p.y, maxCoordinate);
         }
-        multiplier = length / (maxCoordinate * 3);
 
         // Display the Convex Hull in the Console
         System.out.println("Convex Hull Solution: ");
@@ -53,7 +55,7 @@ public class ConvexHullJM extends JPanel {
         JFrame frame = new JFrame("Convex Hull");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(hull);
-        frame.setSize(length, length);
+        frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -61,19 +63,26 @@ public class ConvexHullJM extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        width = getWidth();
+        height = getHeight();
+        shiftX = width / 2;
+        shiftY = height / 2;
+        multiplier = Math.min(width, height) / (3 * maxCoordinate);
+
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setColor(Color.black);
 
         // Draw the x and y axes
-        g2d.drawLine(shift, 0, shift, length);
-        g2d.drawLine(0, shift, length, shift);
+        g2d.drawLine(shiftX, 0, shiftX, height);
+        g2d.drawLine(0, shiftY, width, shiftY);
 
         g2d.setColor(Color.blue);
 
         // Plot all points (Including those not on the Convex Hull)
         for (Point p : points) {
             g2d.fillOval(orientX(p.x) - pointR, orientY(p.y) - pointR, 2 * pointR, 2 * pointR);
+            g2d.drawString("(" + p.x + ", " + p.y + ")", orientX(p.x) + 3, orientY(p.y) - 5);
         }
 
         // Draw Convex Hull
@@ -86,11 +95,11 @@ public class ConvexHullJM extends JPanel {
     }
 
     static int orientX(int x) {
-        return (x * multiplier) + shift;
+        return (int) (x * multiplier) + shiftX;
     }
 
     static int orientY(int y) {
-        return shift - (y * multiplier);
+        return (int) (shiftY - (y * multiplier));
     }
 
     // Trim last character of a string
