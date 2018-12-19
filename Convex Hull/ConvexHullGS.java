@@ -17,8 +17,8 @@ public class ConvexHullGS extends JPanel {
     final static int pointR = 3;                                  // Radius of Coordinate Point`
     static double multiplier;                                     // Coordinate Scaling Factor
 
-    static ArrayList <Point> points = new ArrayList <> ();      // Input Points
-    static ArrayList <Point> hull = new ArrayList <> ();            // Points on the Convex Hull
+    static ArrayList <Point> points = new ArrayList <> ();        // Input Points
+    static ArrayList <Point> hull = new ArrayList <> ();          // Points on the Convex Hull
 
 
     public static void main(String[] args) throws IOException {
