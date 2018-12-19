@@ -9,8 +9,11 @@ import java.awt.Color;
 
 public class ConvexHullGS extends JPanel {
 
-    final static int length = 800;                                // Side length of Display Window
-    final static int shift = length / 2;                          // Orientation shift of coordinates
+    static int width;                                             // Width of Display Window
+    static int height;                                            // Height of Display Window
+    static int shiftX;                                            // Orientation shift of X coordinate
+    static int shiftY;                                            // Orientation shift of Y coordinate
+    static double maxCoordinate;                                  // Highest x or y coordinate value
     final static int pointR = 3;                                  // Radius of Coordinate Point`
     static double multiplier;                                     // Coordinate Scaling Factor
 
@@ -37,12 +40,11 @@ public class ConvexHullGS extends JPanel {
         hull = getConvexHull(points);
 
         // Determine scaling of coordinates
-        double maxCoordinate = 0;
+        maxCoordinate = 0;
         for (Point2D p : hull) {
             maxCoordinate = Math.max(p.getX(), maxCoordinate);
             maxCoordinate = Math.max(p.getY(), maxCoordinate);
         }
-        multiplier = length / (maxCoordinate * 3);
 
         // Display the Convex Hull in the Console
         System.out.println("Convex Hull Solution: ");
@@ -57,7 +59,7 @@ public class ConvexHullGS extends JPanel {
         JFrame frame = new JFrame("Convex Hull");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(hull);
-        frame.setSize(length, length);
+        frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
@@ -65,36 +67,43 @@ public class ConvexHullGS extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        width = getWidth();
+        height = getHeight();
+        shiftX = width / 2;
+        shiftY = height / 2;
+        multiplier = Math.min(width, height) / (3 * maxCoordinate);
+
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setColor(Color.black);
 
         // Draw the x and y axes
-        g2d.drawLine(shift, 0, shift, length);
-        g2d.drawLine(0, shift, length, shift);
+        g2d.drawLine(shiftX, 0, shiftX, height);
+        g2d.drawLine(0, shiftY, width, shiftY);
 
         g2d.setColor(Color.blue);
 
         // Plot all points (Including those not on the Convex Hull)
-        for (Point2D p : points) {
-            g2d.fillOval(orientX(p.getX()) - pointR, orientY(p.getY()) - pointR, 2 * pointR, 2 * pointR);
+        for (Point p : points) {
+            g2d.fillOval(orientX(p.x) - pointR, orientY(p.y) - pointR, 2 * pointR, 2 * pointR);
+            g2d.drawString("(" + p.x + ", " + p.y + ")", orientX(p.x) + 3, orientY(p.y) - 5);
         }
 
         // Draw Convex Hull
-        for (int i = 0; i < hull.size() - 1; i++) {
-            Point2D p1 = hull.get(i);
-            Point2D p2 = hull.get(i + 1);
+        for (int i = 0; i < hull.size(); i++) {
+            Point p1 = hull.get(i);
+            Point p2 = hull.get((i + 1) % hull.size());
 
-            g2d.drawLine(orientX(p1.getX()), orientY(p1.getY()), orientX(p2.getX()), orientY(p2.getY()));
+            g2d.drawLine(orientX(p1.x), orientY(p1.y), orientX(p2.x), orientY(p2.y));
         }
     }
 
-    static int orientX(double x) {
-        return (int) ((x * multiplier) + shift);
+    static int orientX(int x) {
+        return (int) (x * multiplier) + shiftX;
     }
 
-    static int orientY(double y) {
-        return (int) (shift - (y * multiplier));
+    static int orientY(int y) {
+        return (int) (shiftY - (y * multiplier));
     }
 
     // Trim last character of a string
@@ -173,8 +182,10 @@ public class ConvexHullGS extends JPanel {
                 } else if (thetaA > thetaB) {
                     return 1;
                 } else {
-                    double distanceA = Math.sqrt(((lowest.x - a.x) * (lowest.x - a.x)) + ((lowest.y - a.y) * (lowest.y - a.y)));
-                    double distanceB = Math.sqrt(((lowest.x - b.x) * (lowest.x - b.x)) + ((lowest.y - b.y) * (lowest.y - b.y)));
+                    double distanceA = Math.sqrt(((lowest.x - a.x) * (lowest.x - a.x)) +
+                            ((lowest.y - a.y) * (lowest.y - a.y)));
+                    double distanceB = Math.sqrt(((lowest.x - b.x) * (lowest.x - b.x)) +
+                            ((lowest.y - b.y) * (lowest.y - b.y)));
 
                     if (distanceA < distanceB) {
                         return -1;
