@@ -16,7 +16,10 @@ public class LetterHistogram {
         s = s.toUpperCase();
 
         for (int i = 0; i < s.length(); i++) {
-            freq[s.charAt(i) - 'A']++;
+            int index = s.charAt(i) - 'A';
+
+            if (index > 0 && index < 26)
+                freq[index]++;
         }
 
         for (int i = 0; i < 26; i++) {
