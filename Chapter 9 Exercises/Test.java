@@ -4,6 +4,7 @@
 
 public class Test {
 
+    // Displays the type of the given object
     public static void type(Object value) {
         if (value.getClass() == Integer.class) {
             System.out.println("int");
