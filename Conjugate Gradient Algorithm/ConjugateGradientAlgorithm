@@ -1,0 +1,140 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+
+public class Matrices {
+
+    final static BigDecimal[][] A = {{new BigDecimal(3.0), new BigDecimal(1.0)}, {new BigDecimal(1.0), new BigDecimal(5.0)}};
+    final static BigDecimal[][] x = {{new BigDecimal(1.0)}, {new BigDecimal(2.0)}};
+    final static BigDecimal BTop = (A[0][0].multiply(x[0][0])).add(A[0][1].multiply(x[1][0]));
+    final static BigDecimal BBot = (A[1][0].multiply(x[0][0])).add(A[1][1].multiply(x[1][0]));
+    final static BigDecimal[][] B = {{BTop}, {BBot}};
+
+    final static BigDecimal threshold = new BigDecimal(1e-12);
+
+    public static void main(String[] args) {
+        BigDecimal[][] x0 = {{new BigDecimal(1.0)}, {new BigDecimal(1)}};
+
+        BigDecimal[][] r = subtract(B, multiply(A, x0));
+        BigDecimal[][] p = subtract(B, multiply(A, x0));
+
+        boolean found = false;
+
+        while (!found) {
+            BigDecimal[][] Ap = multiply(A, p);
+            BigDecimal rOld = convert(multiply(transpose(r), r));
+            BigDecimal alpha = rOld.divide(convert(multiply(transpose(p), Ap)), 10, RoundingMode.HALF_UP);
+
+            x0 = add(x0, multiply(alpha, p));
+            r = subtract(r, multiply(alpha, Ap));
+
+            if (check(r))
+                found = true;
+
+            BigDecimal rNew = convert(multiply(transpose(r), r));
+            BigDecimal beta = rNew.divide(rOld, 10, RoundingMode.HALF_UP);
+            p = add(r, multiply(beta, p));
+        }
+
+        for (BigDecimal[] row : x0)
+            for (BigDecimal b : row)
+                System.out.println(b.setScale(6, RoundingMode.HALF_UP) + " ");
+    }
+
+    // Checks if given vector is small enough
+    public static boolean check(BigDecimal[][] r) {
+        for (int i = 0; i < r.length; i++) {
+            for (int j = 0; j < r[0].length; j++) {
+                if (r[i][j].compareTo(threshold) > 0)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Converts matrix with one element into a double
+    public static BigDecimal convert(BigDecimal[][] a) {
+        return a[0][0];
+    }
+
+    // Returns a^T
+    public static BigDecimal[][] transpose(BigDecimal[][] a) {
+        BigDecimal[][] ret = new BigDecimal[a[0].length][a.length];
+        for (int i = 0; i < ret.length; i++)
+            Arrays.fill(ret[i], new BigDecimal(0.0));
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                ret[j][i] = a[i][j];
+            }
+        }
+
+        return ret;
+    }
+
+    // Returns a * b, where both a and b are matrices
+    public static BigDecimal[][] multiply(BigDecimal[][] a, BigDecimal[][] b) {
+        int r1 = a.length;
+        int c1 = a[0].length; // Also equals to r2
+        int c2 = b[0].length;
+
+        BigDecimal[][] ret = new BigDecimal[r1][c2];
+        for (int i = 0; i < ret.length; i++)
+            Arrays.fill(ret[i], new BigDecimal(0.0));
+
+        for (int i = 0; i < r1; i++) {
+            for (int j = 0; j < c2; j++) {
+                for (int k = 0; k < c1; k++) {
+                    ret[i][j] = ret[i][j].add(a[i][k].multiply(b[k][j]));
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    // Returns a * b, where a is double and b is matrix
+    public static BigDecimal[][] multiply(BigDecimal a, BigDecimal[][] b) {
+        BigDecimal[][] ret = new BigDecimal[b.length][b[0].length];
+        for (int i = 0; i < ret.length; i++)
+            Arrays.fill(ret[i], new BigDecimal(0.0));
+
+        for (int i = 0; i < b.length; i++) {
+            for (int j = 0; j < b[0].length; j++) {
+                ret[i][j] = b[i][j].multiply(a);
+            }
+        }
+        return ret;
+    }
+
+    // Returns a + b
+    public static BigDecimal[][] add(BigDecimal[][] a, BigDecimal[][] b) {
+        BigDecimal[][] ret = new BigDecimal[a.length][a[0].length];
+        for (int i = 0; i < ret.length; i++)
+            Arrays.fill(ret[i], new BigDecimal(0.0));
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                ret[i][j] = a[i][j].add(b[i][j]);
+            }
+        }
+
+        return ret;
+    }
+
+    // Returns a - b
+    public static BigDecimal[][] subtract(BigDecimal[][] a, BigDecimal[][] b) {
+        BigDecimal[][] ret = new BigDecimal[a.length][a[0].length];
+        for (int i = 0; i < ret.length; i++)
+            Arrays.fill(ret[i], new BigDecimal(0.0));
+
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[0].length; j++) {
+                ret[i][j] = a[i][j].add(new BigDecimal(-1.0).multiply(b[i][j]));
+            }
+        }
+
+        return ret;
+    }
+}
