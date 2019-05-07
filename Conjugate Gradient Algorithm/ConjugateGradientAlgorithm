@@ -37,6 +37,16 @@ public class Matrices {
             p = add(r, multiply(beta, p));
         }
 
+        System.out.println("Matrix x:");
+        for (BigDecimal[] row : x) {
+            for (BigDecimal b : row)
+                System.out.print(b + " ");
+
+            System.out.println();
+        }
+        System.out.println();
+
+        System.out.println("Matrix result:");
         for (BigDecimal[] row : result) {
             for (BigDecimal b : row)
                 System.out.print(b.setScale(6, RoundingMode.HALF_UP) + " ");
